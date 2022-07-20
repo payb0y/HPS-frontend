@@ -1,12 +1,12 @@
 import classes from "./Login.module.css";
 import Card from "../UI/Card";
-import { useState, useContext } from "react";
+import { useState, useContext, useRef } from "react";
 import AuthContext from "../../store/auth-context";
 
 const Login = (props) => {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
     const authCtx = useContext(AuthContext);
+    const usernameRef = useRef();
+    const passwordRef = useRef();
     const formSubmitHandler = (e) => {
         e.preventDefault();
         const url = "http://localhost:8080/login";
@@ -15,13 +15,13 @@ const Login = (props) => {
             headers: new Headers({
                 "Content-Type": "application/x-www-form-urlencoded",
             }),
-            body: `username=${username}&password=${password}`,
+            body: `username=${usernameRef.current.value}&password=${passwordRef.current.value}`,
         })
             .then((response) => {
                 if (response.ok) {
                     return response.json();
                 }
-                if (response.status == 403) {
+                if (response.status === 403) {
                     props.msgHandler("403 : FORBIDDEN");
                 }
             })
@@ -32,24 +32,18 @@ const Login = (props) => {
                 console.log(error);
             });
     };
-    const usernameHandler = (e) => {
-        setUsername(e.target.value);
-    };
-    const passwordHandler = (e) => {
-        setPassword(e.target.value);
-    };
     return (
         <form onSubmit={formSubmitHandler}>
             <Card>
                 <input
                     className={classes.input}
-                    onChange={usernameHandler}
+                    ref={usernameRef}
                     type="text"
                     placeholder="Username"
                 />
                 <input
                     className={classes.input}
-                    onChange={passwordHandler}
+                    ref={passwordRef}
                     type="password"
                     placeholder="Password"
                 />

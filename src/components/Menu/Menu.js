@@ -4,21 +4,25 @@ import AuthContext from "../../store/auth-context";
 const Menu = (props) => {
     const url = "http://localhost:8080/api/home";
     const authCtx = useContext(AuthContext);
-    fetch(url, {
+    /*fetch(url, {
         method: "GET",
         headers: new Headers({
             Authorization: "Bearer " + props.token,
         }),
     }).then((response) => {
-        console.log(response);
-    });
-
+        if (response.ok) {
+            console.log(response);
+        } else {
+            console.log(response);
+        }
+    });*/
+    console.log(authCtx.roles);
     const clickHandler = () => {
         authCtx.logout();
     };
     return (
         <Card>
-            <span onClick={clickHandler}>log out</span>
+            <span onClick={clickHandler}>log</span>
         </Card>
     );
 };
