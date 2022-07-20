@@ -1,6 +1,6 @@
 import classes from "./Login.module.css";
 import Card from "../UI/Card";
-import { useState, useContext, useRef } from "react";
+import { useContext, useRef } from "react";
 import AuthContext from "../../store/auth-context";
 
 const Login = (props) => {
