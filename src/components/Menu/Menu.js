@@ -1,7 +1,9 @@
 import Card from "../UI/Card";
-
+import { useContext } from "react";
+import AuthContext from "../../store/auth-context";
 const Menu = (props) => {
     const url = "http://localhost:8080/api/home";
+    const authCtx = useContext(AuthContext);
     fetch(url, {
         method: "GET",
         headers: new Headers({
@@ -12,7 +14,7 @@ const Menu = (props) => {
     });
 
     const clickHandler = () => {
-        props.tokenHandler("");
+        authCtx.logout();
     };
     return (
         <Card>

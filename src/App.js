@@ -1,16 +1,13 @@
-import { useState } from "react";
 import Login from "./components/Login/Login";
 import Menu from "./components/Menu/Menu";
 import PopUp from "./components/UI/PopUp";
+import { useState, useContext } from "react";
+import AuthContext from "./store/auth-context";
 
 function App() {
     const [msgVisibility, setMsgVisibility] = useState(false);
     const [message, setMessage] = useState("");
-    const [token, setToken] = useState("");
-    const tokenHandler = (t) => {
-        console.log(t);
-        setToken(t);
-    };
+    const authCtx = useContext(AuthContext);
     const msgHandler = (msg) => {
         setMessage(msg);
         setMsgVisibility(true);
@@ -19,11 +16,7 @@ function App() {
     return (
         <>
             {msgVisibility && <PopUp>{message}</PopUp>}
-            {token === "" ? (
-                <Login msgHandler={msgHandler} tokenHandler={tokenHandler} />
-            ) : (
-                <Menu tokenHandler={tokenHandler} token={token} />
-            )}
+            {!authCtx.isLoggedIn ? <Login msgHandler={msgHandler} /> : <Menu />}
         </>
     );
 }

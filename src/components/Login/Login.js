@@ -1,11 +1,14 @@
 import classes from "./Login.module.css";
 import Card from "../UI/Card";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import AuthContext from "../../store/auth-context";
 
 const Login = (props) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const loginButtonHandler = async () => {
+    const authCtx = useContext(AuthContext);
+    const formSubmitHandler = (e) => {
+        e.preventDefault();
         const url = "http://localhost:8080/login";
         fetch(url, {
             method: "POST",
@@ -23,7 +26,7 @@ const Login = (props) => {
                 }
             })
             .then((data) => {
-                props.tokenHandler(data.access_token);
+                authCtx.login(data.access_token);
             })
             .catch((error) => {
                 console.log(error);
@@ -36,23 +39,23 @@ const Login = (props) => {
         setPassword(e.target.value);
     };
     return (
-        <Card>
-            <input
-                className={classes.input}
-                onChange={usernameHandler}
-                type="text"
-                placeholder="Username"
-            />
-            <input
-                className={classes.input}
-                onChange={passwordHandler}
-                type="password"
-                placeholder="Password"
-            />
-            <button className={classes.button} onClick={loginButtonHandler}>
-                Log in
-            </button>
-        </Card>
+        <form onSubmit={formSubmitHandler}>
+            <Card>
+                <input
+                    className={classes.input}
+                    onChange={usernameHandler}
+                    type="text"
+                    placeholder="Username"
+                />
+                <input
+                    className={classes.input}
+                    onChange={passwordHandler}
+                    type="password"
+                    placeholder="Password"
+                />
+                <button className={classes.button}>Log in</button>
+            </Card>
+        </form>
     );
 };
 
