@@ -8,21 +8,31 @@ const AuthContext = React.createContext({
     login: (token) => {},
     logout: () => {},
 });
-
+const calcRemainingTime = (exp) => {
+    return new Date(exp).getTime() - new Date().getTime();
+};
 export const AuthContextProvider = (props) => {
     const initialToken = localStorage.getItem("token");
     const [token, setToken] = useState(initialToken);
     const [roles, setRoles] = useState([]);
+
     const userIsLoggedIn = !!token;
-    const loginHandler = (token) => {
-        setRoles(jwt(token).roles);
-        setToken(token);
-        localStorage.setItem("token", token);
-    };
+
     const logoutHandler = () => {
         setToken(null);
         localStorage.removeItem("token");
     };
+
+    const loginHandler = (token) => {
+        setRoles(jwt(token).roles);
+        setToken(token);
+        localStorage.setItem("token", token);
+
+        const remainingTime = calcRemainingTime(jwt(token).exp);
+        console.log(remainingTime);
+        setTimeout(logoutHandler, remainingTime);
+    };
+
     const contextValue = {
         token: token,
         roles: roles,
