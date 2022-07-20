@@ -1,25 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import Login from "./components/Login/Login";
+import Menu from "./components/Menu/Menu";
+import PopUp from "./components/UI/PopUp";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const [msgVisibility, setMsgVisibility] = useState(false);
+    const [message, setMessage] = useState("");
+    const [token, setToken] = useState("");
+    const tokenHandler = (t) => {
+        console.log(t);
+        setToken(t);
+    };
+    const msgHandler = (msg) => {
+        setMessage(msg);
+        setMsgVisibility(true);
+        setTimeout(() => setMsgVisibility(false), 4000);
+    };
+    return (
+        <>
+            {msgVisibility && <PopUp>{message}</PopUp>}
+            {token === "" ? (
+                <Login msgHandler={msgHandler} tokenHandler={tokenHandler} />
+            ) : (
+                <Menu tokenHandler={tokenHandler} token={token} />
+            )}
+        </>
+    );
 }
 
 export default App;
