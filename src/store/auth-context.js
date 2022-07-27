@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import jwt from "jwt-decode";
 
 let logoutTimer;
@@ -10,9 +10,6 @@ const AuthContext = React.createContext({
     login: (token) => {},
     logout: () => {},
 });
-const calcRemainingTime = (exp) => {
-    return exp * 1000 - new Date().getTime();
-};
 
 export const AuthContextProvider = (props) => {
     const initialToken = localStorage.getItem("token");
@@ -34,10 +31,6 @@ export const AuthContextProvider = (props) => {
         setRoles(jwt(token).roles);
         setToken(token);
         localStorage.setItem("token", token);
-        logoutTimer = setTimeout(
-            logoutHandler,
-            calcRemainingTime(jwt(token).exp)
-        );
     };
 
     const contextValue = {
