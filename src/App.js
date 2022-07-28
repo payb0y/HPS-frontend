@@ -1,5 +1,5 @@
 import Login from "./components/Login/Login";
-import Menu from "./components/Menu/Menu";
+import Menue from "./components/Menu/Menu";
 import PopUp from "./components/UI/PopUp";
 import { useState, useContext } from "react";
 import AuthContext from "./store/auth-context";
@@ -16,7 +16,11 @@ function App() {
     return (
         <>
             {msgVisibility && <PopUp>{message}</PopUp>}
-            {!authCtx.isLoggedIn ? <Login msgHandler={msgHandler} /> : <Menu />}
+            {!authCtx.isLoggedIn ? (
+                <Login msgHandler={msgHandler} />
+            ) : (
+                <Menue />
+            )}
         </>
     );
 }

@@ -1,28 +1,32 @@
 import classes from "./Login.module.css";
 import Card from "../UI/Card";
-import { useContext, useRef } from "react";
+import { useContext } from "react";
 import AuthContext from "../../store/auth-context";
 
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { notification, Form, Input } from "antd";
+import "antd/dist/antd.css";
 const Login = (props) => {
     const authCtx = useContext(AuthContext);
-    const usernameRef = useRef();
-    const passwordRef = useRef();
-    const formSubmitHandler = (e) => {
-        e.preventDefault();
+    const onFinish = (value) => {
         const url = "http://localhost:8080/login";
         fetch(url, {
             method: "POST",
             headers: new Headers({
                 "Content-Type": "application/x-www-form-urlencoded",
             }),
-            body: `username=${usernameRef.current.value}&password=${passwordRef.current.value}`,
+            body: `username=${value.username}&password=${value.password}`,
         })
             .then((response) => {
                 if (response.ok) {
                     return response.json();
                 }
                 if (response.status === 403) {
-                    props.msgHandler("403 : FORBIDDEN");
+                    notification.error({
+                        message: "403 : FORBIDDEN",
+                        placement: "top",
+                        duration: 1,
+                    });
                 }
             })
             .then((data) => {
@@ -33,23 +37,46 @@ const Login = (props) => {
             });
     };
     return (
-        <form onSubmit={formSubmitHandler}>
+        <Form name="normal_login" className="login-form" onFinish={onFinish}>
             <Card>
-                <input
-                    className={classes.input}
-                    ref={usernameRef}
-                    type="text"
-                    placeholder="Username"
-                />
-                <input
-                    className={classes.input}
-                    ref={passwordRef}
-                    type="password"
-                    placeholder="Password"
-                />
-                <button className={classes.button}>Log in</button>
+                <Form.Item
+                    name="username"
+                    rules={[
+                        {
+                            required: true,
+                            message: "",
+                        },
+                    ]}
+                >
+                    <Input
+                        prefix={
+                            <UserOutlined className="site-form-item-icon" />
+                        }
+                        placeholder="Username"
+                    />
+                </Form.Item>
+                <Form.Item
+                    name="password"
+                    rules={[
+                        {
+                            required: true,
+                            message: "",
+                        },
+                    ]}
+                >
+                    <Input
+                        prefix={
+                            <LockOutlined className="site-form-item-icon" />
+                        }
+                        type="password"
+                        placeholder="Password"
+                    />
+                </Form.Item>
+                <Form.Item>
+                    <button className={classes.button}>Log in</button>
+                </Form.Item>
             </Card>
-        </form>
+        </Form>
     );
 };
 
