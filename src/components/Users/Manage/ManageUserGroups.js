@@ -1,22 +1,21 @@
 import React, { useState, useEffect, useContext } from "react";
 import "antd/dist/antd.css";
 import AuthContext from "../../../store/auth-context";
-import { Modal, Transfer } from "antd";
+import { notification, Modal, Transfer } from "antd";
+import differenceBy from "lodash/differenceBy";
 
 const ManageUserGroups = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(true);
     const authCtx = useContext(AuthContext);
     const [userGroups, setUsergroups] = useState([]);
     const [targetKeys, setTargetKeys] = useState([]);
-    const url = "http://localhost:8080/api/groups";
-
     const handleCancel = () => {
         setIsModalVisible(false);
         props.setManageMenu();
     };
 
     useEffect(() => {
-        fetch(url, {
+        fetch(props.getUrl, {
             method: "GET",
             headers: new Headers({
                 Authorization: "Bearer " + authCtx.token,
@@ -33,12 +32,9 @@ const ManageUserGroups = (props) => {
     }, []);
     useEffect(() => {
         setTargetKeys(
-            userGroups
-                .filter(
-                    ({ id: id1 }) =>
-                        !props.user.groupes.some(({ id: id2 }) => id2 === id1)
-                )
-                .map((group) => group.id)
+            differenceBy(userGroups, props.entity, "id").map(
+                (group) => group.id
+            )
         );
     }, [userGroups]);
     const filterOption = (inputValue, option) =>
@@ -48,24 +44,40 @@ const ManageUserGroups = (props) => {
         setTargetKeys(newTargetKeys);
     };
     const handleOk = () => {
-        fetch("http://localhost:8080/api/user/addUserToGroups", {
+        fetch(props.postUrl, {
             method: "POST",
             headers: new Headers({
                 Authorization: "Bearer " + authCtx.token,
                 "Content-Type": "application/json",
             }),
             body: JSON.stringify({
-                username: props.user.username,
-                groupNames: userGroups
+                username: props.username,
+                names: userGroups
                     .filter((group) => targetKeys.indexOf(group.id) < 0)
                     .map((group) => group.name),
             }),
+        }).then((response) => {
+            if (response.ok) {
+                notification.success({
+                    message: "Operation done successfully",
+                    placement: "top",
+                    duration: 1.5,
+                });
+            } else {
+                notification.error({
+                    message: "Operation failed",
+                    placement: "top",
+                    duration: 1.5,
+                });
+            }
         });
-        props.setReloadData(Math.random());
+        props.setReloadData(new Date().getTime());
+        setIsModalVisible(false);
+        props.setManageMenu();
     };
     return (
         <Modal
-            title="Manage groups"
+            title={props.title}
             visible={isModalVisible}
             onOk={handleOk}
             onCancel={handleCancel}

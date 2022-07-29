@@ -9,7 +9,7 @@ const Users = () => {
     const authCtx = useContext(AuthContext);
     const [dataSource, setDataSource] = useState([]);
     const [manageMenu, setManageMenu] = useState();
-    const [reloadData, setReloadData] = useState(false);
+    const [reloadData, setReloadData] = useState();
     let currentUser = {};
     useEffect(() => {
         fetch(url, {
@@ -22,22 +22,47 @@ const Users = () => {
             .then((data) =>
                 setDataSource(
                     data.map((d) => {
-                        return { key: d.id, ...d };
+                        console.log(data);
+                        let tkey;
+
+                        if (d.id === null) {
+                            tkey = Math.random();
+                        } else {
+                            tkey = d.id;
+                        }
+                        return { key: tkey, ...d };
                     })
                 )
             );
     }, [reloadData]);
     const clickHandler = (item) => {
-        console.log(item);
         switch (item.key) {
-            default:
+            case "1":
                 setManageMenu(
                     <ManageUserGroups
-                        user={currentUser}
+                        username={currentUser.username}
+                        entity={currentUser.groupes}
                         setManageMenu={setManageMenu}
                         setReloadData={setReloadData}
+                        getUrl="http://localhost:8080/api/groups"
+                        postUrl="http://localhost:8080/api/user/addUserToGroups"
+                        title={"Manage groups"}
                     />
                 );
+                break;
+            case "2":
+                setManageMenu(
+                    <ManageUserGroups
+                        username={currentUser.username}
+                        entity={currentUser.roles}
+                        setManageMenu={setManageMenu}
+                        setReloadData={setReloadData}
+                        getUrl="http://localhost:8080/api/roles"
+                        postUrl="http://localhost:8080/api/user/addRolesToUser"
+                        title="Manage roles"
+                    />
+                );
+                break;
         }
     };
     const menu = (
@@ -96,14 +121,28 @@ const Users = () => {
             ),
         },
         {
-            title: "Action",
+            title: "LdapGroups",
             key: "5",
+            dataIndex: "ldapGroups",
+            render: (tags) => (
+                <>
+                    {tags.map((tag) => (
+                        <Tag color="blue" key={Math.random()}>
+                            {tag.name}
+                        </Tag>
+                    ))}
+                </>
+            ),
+        },
+        {
+            title: "Action",
+            key: "6",
             render: (record) => (
                 <Space size="middle">
                     <Dropdown
                         overlay={menu}
                         onClick={() => {
-                            test(record);
+                            currentUser = record;
                         }}
                     >
                         <a>Manage</a>
@@ -112,9 +151,6 @@ const Users = () => {
             ),
         },
     ];
-    const test = (record) => {
-        currentUser = record;
-    };
 
     return (
         <>

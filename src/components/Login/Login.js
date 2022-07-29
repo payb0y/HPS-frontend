@@ -6,7 +6,7 @@ import AuthContext from "../../store/auth-context";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { notification, Form, Input } from "antd";
 import "antd/dist/antd.css";
-const Login = (props) => {
+const Login = () => {
     const authCtx = useContext(AuthContext);
     const onFinish = (value) => {
         const url = "http://localhost:8080/login";
