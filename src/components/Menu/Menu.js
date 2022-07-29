@@ -3,8 +3,9 @@ import AuthContext from "../../store/auth-context";
 
 import "antd/dist/antd.css";
 import { Layout, Menu } from "antd";
-import { UserOutlined, LogoutOutlined } from "@ant-design/icons";
+import { UserOutlined, LogoutOutlined, TeamOutlined } from "@ant-design/icons";
 import Users from "../Users/Users";
+import Groups from "../Groups/Groups";
 
 const Menue = () => {
     const [activeMenu, setActiveMenu] = useState();
@@ -14,8 +15,13 @@ const Menue = () => {
         switch (item.key) {
             case "logout":
                 authCtx.logout();
+                break;
             case "users":
                 setActiveMenu(<Users />);
+                break;
+            case "groups":
+                setActiveMenu(<Groups />);
+                break;
         }
     };
     const { Content, Sider } = Layout;
@@ -24,6 +30,11 @@ const Menue = () => {
             key: "users",
             icon: React.createElement(UserOutlined),
             label: "Users",
+        },
+        {
+            key: "groups",
+            icon: React.createElement(TeamOutlined),
+            label: "Groups",
         },
         {
             key: "logout",

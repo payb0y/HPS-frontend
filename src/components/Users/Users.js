@@ -2,7 +2,7 @@ import "antd/dist/antd.css";
 import { Table, Tag, Menu, Dropdown, Space } from "antd";
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "../../store/auth-context";
-import ManageUserGroups from "./Manage/ManageUserGroups";
+import ManageUserGroups from "./Manage/ManageUser";
 
 const Users = () => {
     const url = "http://localhost:8080/api/users";
