@@ -20,10 +20,9 @@ const Login = () => {
             .then((response) => {
                 if (response.ok) {
                     return response.json();
-                }
-                if (response.status === 403) {
+                } else {
                     notification.error({
-                        message: "403 : FORBIDDEN",
+                        message: "Login failed",
                         placement: "top",
                         duration: 1,
                     });

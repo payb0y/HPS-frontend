@@ -8,7 +8,10 @@ const Groups = () => {
     const url = "http://localhost:8080/api/groups";
     const authCtx = useContext(AuthContext);
     const [dataSource, setDataSource] = useState([]);
+    const [loading, setLoading] = useState(false);
+
     useEffect(() => {
+        setLoading(true);
         fetch(url, {
             method: "GET",
             headers: new Headers({
@@ -16,13 +19,14 @@ const Groups = () => {
             }),
         })
             .then((response) => response.json())
-            .then((data) =>
+            .then((data) => {
                 setDataSource(
                     data.map((d) => {
                         return { key: d.id, ...d };
                     })
-                )
-            );
+                );
+                setLoading(false);
+            });
     }, []);
     const columns = [
         {
@@ -39,7 +43,11 @@ const Groups = () => {
 
     return (
         <>
-            <Table dataSource={dataSource} columns={columns} />
+            <Table
+                dataSource={dataSource}
+                columns={columns}
+                loading={loading}
+            />
         </>
     );
 };

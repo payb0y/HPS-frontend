@@ -10,8 +10,10 @@ const Users = () => {
     const [dataSource, setDataSource] = useState([]);
     const [manageMenu, setManageMenu] = useState();
     const [reloadData, setReloadData] = useState();
+    const [loading, setLoading] = useState(false);
     let currentUser = {};
     useEffect(() => {
+        setLoading(true);
         fetch(url, {
             method: "GET",
             headers: new Headers({
@@ -19,21 +21,15 @@ const Users = () => {
             }),
         })
             .then((response) => response.json())
-            .then((data) =>
+            .then((data) => {
                 setDataSource(
                     data.map((d) => {
-                        console.log(data);
-                        let tkey;
-
-                        if (d.id === null) {
-                            tkey = Math.random();
-                        } else {
-                            tkey = d.id;
-                        }
-                        return { key: tkey, ...d };
+                        return { key: d.id, ...d };
                     })
-                )
-            );
+                );
+                console.log(data);
+                setLoading(false);
+            });
     }, [reloadData]);
     const clickHandler = (item) => {
         switch (item.key) {
@@ -154,7 +150,11 @@ const Users = () => {
 
     return (
         <>
-            <Table dataSource={dataSource} columns={columns} />
+            <Table
+                dataSource={dataSource}
+                columns={columns}
+                loading={loading}
+            />
             <>{manageMenu}</>
         </>
     );
