@@ -63,6 +63,7 @@ const Menue = () => {
             </Sider>
             <Layout
                 style={{
+                    width: "fit-content",
                     padding: "0 24px 24px",
                 }}
             >

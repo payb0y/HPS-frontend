@@ -9,7 +9,7 @@ const Users = () => {
     const authCtx = useContext(AuthContext);
     const [dataSource, setDataSource] = useState([]);
     const [manageMenu, setManageMenu] = useState();
-    const [reloadData, setReloadData] = useState();
+    const [reloadData, setReloadData] = useState("");
     const [loading, setLoading] = useState(false);
     let currentUser = {};
     useEffect(() => {
@@ -151,6 +151,7 @@ const Users = () => {
     return (
         <>
             <Table
+                pagination={{ pageSize: 10 }}
                 dataSource={dataSource}
                 columns={columns}
                 loading={loading}
