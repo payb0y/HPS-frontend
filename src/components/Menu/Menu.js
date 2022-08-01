@@ -10,6 +10,7 @@ import Groups from "../Groups/Groups";
 const Menue = () => {
     const [activeMenu, setActiveMenu] = useState();
     const authCtx = useContext(AuthContext);
+    const { Content, Sider } = Layout;
 
     const clickHandler = (item) => {
         switch (item.key) {
@@ -25,7 +26,7 @@ const Menue = () => {
             default:
         }
     };
-    const { Content, Sider } = Layout;
+
     const items = [
         {
             key: "users",
