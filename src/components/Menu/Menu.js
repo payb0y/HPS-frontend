@@ -22,6 +22,7 @@ const Menue = () => {
             case "groups":
                 setActiveMenu(<Groups />);
                 break;
+            default:
         }
     };
     const { Content, Sider } = Layout;

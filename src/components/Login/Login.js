@@ -1,11 +1,10 @@
-import classes from "./Login.module.css";
-import Card from "../UI/Card";
 import { useContext } from "react";
+import Card from "../UI/Card";
 import AuthContext from "../../store/auth-context";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Form, Input } from "antd";
-import "antd/dist/antd.css";
+import { Form, Input, Button } from "antd";
 import { userLogin } from "../../api/UserAPI";
+import "antd/dist/antd.css";
 
 const Login = () => {
     const authCtx = useContext(AuthContext);
@@ -49,7 +48,7 @@ const Login = () => {
                     />
                 </Form.Item>
                 <Form.Item>
-                    <button className={classes.button}>Log in</button>
+                    <Button htmlType="submit">Login</Button>
                 </Form.Item>
             </Card>
         </Form>
