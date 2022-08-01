@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
 import "antd/dist/antd.css";
 import AuthContext from "../../../store/auth-context";
-import { notification, Modal, Transfer } from "antd";
+import { Modal, Transfer } from "antd";
 import differenceBy from "lodash/differenceBy";
+import { addGroupOrRoleToUser, getGroupsOrRoles } from "../../../api/UserAPI";
 
 const ManageUserGroups = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(true);
@@ -13,22 +14,8 @@ const ManageUserGroups = (props) => {
         setIsModalVisible(false);
         props.setManageMenu();
     };
-
     useEffect(() => {
-        fetch(props.getUrl, {
-            method: "GET",
-            headers: new Headers({
-                Authorization: "Bearer " + authCtx.token,
-            }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                setUsergroups(
-                    data.map((data) => {
-                        return { key: data.id, ...data };
-                    })
-                );
-            });
+        getGroupsOrRoles(props, authCtx, setUsergroups);
     }, []);
     useEffect(() => {
         setTargetKeys(
@@ -44,34 +31,14 @@ const ManageUserGroups = (props) => {
         setTargetKeys(newTargetKeys);
     };
     const handleOk = async () => {
-        await fetch(props.postUrl, {
-            method: "POST",
-            headers: new Headers({
-                Authorization: "Bearer " + authCtx.token,
-                "Content-Type": "application/json",
-            }),
-            body: JSON.stringify({
-                username: props.username,
-                names: userGroups
-                    .filter((group) => targetKeys.indexOf(group.id) < 0)
-                    .map((group) => group.name),
-            }),
-        }).then((response) => {
-            if (response.ok) {
-                notification.success({
-                    message: "Operation done successfully",
-                    placement: "top",
-                    duration: 1.5,
-                });
-            } else {
-                notification.error({
-                    message: "Operation failed",
-                    placement: "top",
-                    duration: 1.5,
-                });
-            }
-        });
-        props.fetchUsers();
+        addGroupOrRoleToUser(
+            props,
+            authCtx,
+            userGroups
+                .filter((group) => targetKeys.indexOf(group.id) < 0)
+                .map((group) => group.name)
+        );
+        props.setReload(Math.random());
         setIsModalVisible(false);
         props.setManageMenu();
     };

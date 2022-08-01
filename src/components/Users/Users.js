@@ -4,36 +4,17 @@ import React, { useContext, useEffect, useState } from "react";
 import AuthContext from "../../store/auth-context";
 import ManageUserGroups from "./Manage/ManageUser";
 import { SettingOutlined } from "@ant-design/icons";
-
+import { fetchUsers } from "../../api/UserAPI";
 const Users = () => {
-    const url = "http://localhost:8080/api/users";
     const authCtx = useContext(AuthContext);
     const [dataSource, setDataSource] = useState([]);
     const [manageMenu, setManageMenu] = useState();
     const [loading, setLoading] = useState(false);
-    let currentUser = {};
-    const fetchUsers = async () => {
-        setLoading(true);
-        await fetch(url, {
-            method: "GET",
-            headers: new Headers({
-                Authorization: "Bearer " + authCtx.token,
-            }),
-        })
-            .then((response) => response.json())
-            .then((data) => {
-                setDataSource(
-                    data.map((d) => {
-                        return { key: d.id, ...d };
-                    })
-                );
-                console.log(data);
-                setLoading(false);
-            });
-    };
+    const [reload, setReload] = useState();
+    let currentUser;
     useEffect(() => {
-        fetchUsers();
-    }, []);
+        fetchUsers(authCtx, setDataSource, setLoading);
+    }, [reload]);
     const clickHandler = (item) => {
         switch (item.key) {
             case "1":
@@ -42,7 +23,7 @@ const Users = () => {
                         username={currentUser.username}
                         entity={currentUser.groupes}
                         setManageMenu={setManageMenu}
-                        fetchUsers={fetchUsers}
+                        setReload={setReload}
                         getUrl="http://localhost:8080/api/groups"
                         postUrl="http://localhost:8080/api/user/addUserToGroups"
                         title={"Manage groups"}
@@ -55,13 +36,14 @@ const Users = () => {
                         username={currentUser.username}
                         entity={currentUser.roles}
                         setManageMenu={setManageMenu}
-                        fetchUsers={fetchUsers}
+                        setReload={setReload}
                         getUrl="http://localhost:8080/api/roles"
                         postUrl="http://localhost:8080/api/user/addRolesToUser"
                         title="Manage roles"
                     />
                 );
                 break;
+            default:
         }
     };
     const menu = (

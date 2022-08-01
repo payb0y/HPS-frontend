@@ -2,38 +2,15 @@ import classes from "./Login.module.css";
 import Card from "../UI/Card";
 import { useContext } from "react";
 import AuthContext from "../../store/auth-context";
-
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { notification, Form, Input } from "antd";
+import { Form, Input } from "antd";
 import "antd/dist/antd.css";
+import { userLogin } from "../../api/UserAPI";
+
 const Login = () => {
     const authCtx = useContext(AuthContext);
     const onFinish = (value) => {
-        const url = "http://localhost:8080/login";
-        fetch(url, {
-            method: "POST",
-            headers: new Headers({
-                "Content-Type": "application/x-www-form-urlencoded",
-            }),
-            body: `username=${value.username}&password=${value.password}`,
-        })
-            .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    notification.error({
-                        message: "Login failed",
-                        placement: "top",
-                        duration: 1,
-                    });
-                }
-            })
-            .then((data) => {
-                authCtx.login(data.access_token);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        userLogin(value, authCtx);
     };
     return (
         <Form name="normal_login" className="login-form" onFinish={onFinish}>
