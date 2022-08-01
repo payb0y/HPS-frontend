@@ -43,8 +43,8 @@ const ManageUserGroups = (props) => {
     const handleChange = (newTargetKeys) => {
         setTargetKeys(newTargetKeys);
     };
-    const handleOk = () => {
-        fetch(props.postUrl, {
+    const handleOk = async () => {
+        await fetch(props.postUrl, {
             method: "POST",
             headers: new Headers({
                 Authorization: "Bearer " + authCtx.token,
@@ -71,7 +71,7 @@ const ManageUserGroups = (props) => {
                 });
             }
         });
-        props.setReloadData(new Date().getTime());
+        props.fetchUsers();
         setIsModalVisible(false);
         props.setManageMenu();
     };

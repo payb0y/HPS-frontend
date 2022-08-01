@@ -1,20 +1,20 @@
 import "antd/dist/antd.css";
 import { Table, Tag, Menu, Dropdown, Space } from "antd";
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AuthContext from "../../store/auth-context";
 import ManageUserGroups from "./Manage/ManageUser";
+import { SettingOutlined } from "@ant-design/icons";
 
 const Users = () => {
     const url = "http://localhost:8080/api/users";
     const authCtx = useContext(AuthContext);
     const [dataSource, setDataSource] = useState([]);
     const [manageMenu, setManageMenu] = useState();
-    const [reloadData, setReloadData] = useState("");
     const [loading, setLoading] = useState(false);
     let currentUser = {};
-    useEffect(() => {
+    const fetchUsers = async () => {
         setLoading(true);
-        fetch(url, {
+        await fetch(url, {
             method: "GET",
             headers: new Headers({
                 Authorization: "Bearer " + authCtx.token,
@@ -30,7 +30,10 @@ const Users = () => {
                 console.log(data);
                 setLoading(false);
             });
-    }, [reloadData]);
+    };
+    useEffect(() => {
+        fetchUsers();
+    }, []);
     const clickHandler = (item) => {
         switch (item.key) {
             case "1":
@@ -39,7 +42,7 @@ const Users = () => {
                         username={currentUser.username}
                         entity={currentUser.groupes}
                         setManageMenu={setManageMenu}
-                        setReloadData={setReloadData}
+                        fetchUsers={fetchUsers}
                         getUrl="http://localhost:8080/api/groups"
                         postUrl="http://localhost:8080/api/user/addUserToGroups"
                         title={"Manage groups"}
@@ -52,7 +55,7 @@ const Users = () => {
                         username={currentUser.username}
                         entity={currentUser.roles}
                         setManageMenu={setManageMenu}
-                        setReloadData={setReloadData}
+                        fetchUsers={fetchUsers}
                         getUrl="http://localhost:8080/api/roles"
                         postUrl="http://localhost:8080/api/user/addRolesToUser"
                         title="Manage roles"
@@ -141,7 +144,7 @@ const Users = () => {
                             currentUser = record;
                         }}
                     >
-                        <a>Manage</a>
+                        <a>{React.createElement(SettingOutlined)}</a>
                     </Dropdown>
                 </Space>
             ),
