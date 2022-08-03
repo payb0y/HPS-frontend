@@ -1,21 +1,69 @@
 import { notification } from "antd";
+import Request from "./Request";
 
-export const getGroupsOrRoles = (props, authCtx, setUsergroups) => {
-    fetch(props.getUrl, {
-        method: "GET",
-        headers: new Headers({
-            Authorization: "Bearer " + authCtx.token,
-        }),
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            setUsergroups(
-                data.map((data) => {
-                    return { key: data.id, ...data };
-                })
-            );
+export async function getUsers() {
+    return await Request.get("/users")
+        .then((res) => {
+            return res;
+        })
+        .catch((error) => {
+            return error.response.data;
         });
-};
+}
+export async function getGroups() {
+    return await Request.get("/groups")
+        .then((res) => {
+            return res;
+        })
+        .catch((error) => {
+            return error.response.data;
+        });
+}
+export async function getRoles() {
+    return await Request.get("/roles")
+        .then((res) => {
+            return res;
+        })
+        .catch((error) => {
+            return error.response.data;
+        });
+}
+export async function addUserToGroups(username, userGroups) {
+    return await Request.post("/user/addUserToGroups", {
+        username: username,
+        names: userGroups,
+    })
+        .then((res) => {
+            return res;
+        })
+        .catch((error) => {
+            return error.response.data;
+        });
+}
+export async function addRolesToUser(username, userRoles) {
+    return await Request.post("/user/addRolesToUser", {
+        username: username,
+        names: userRoles,
+    })
+        .then((res) => {
+            return res;
+        })
+        .catch((error) => {
+            return error.response.data;
+        });
+}
+export async function deleteGroup(name) {
+    return await Request.post("/group/delete", {
+        name: name,
+    })
+        .then((res) => {
+            return res;
+        })
+        .catch((error) => {
+            return error.response.data;
+        });
+}
+
 export const userLogin = async (value, authCtx) => {
     fetch("http://localhost:8080/login", {
         method: "POST",
@@ -43,52 +91,4 @@ export const userLogin = async (value, authCtx) => {
         .catch((error) => {
             console.log(error);
         });
-};
-
-export const fetchUsers = async (authCtx, setDataSource, setLoading) => {
-    setLoading(true);
-    await fetch("http://localhost:8080/api/users", {
-        method: "GET",
-        headers: new Headers({
-            Authorization: "Bearer " + authCtx.token,
-        }),
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            setDataSource(
-                data.map((d) => {
-                    return { key: d.id, ...d };
-                })
-            );
-            setLoading(false);
-        });
-};
-
-export const addGroupOrRoleToUser = async (props, authCtx, userGroups) => {
-    await fetch(props.postUrl, {
-        method: "POST",
-        headers: new Headers({
-            Authorization: "Bearer " + authCtx.token,
-            "Content-Type": "application/json",
-        }),
-        body: JSON.stringify({
-            username: props.username,
-            names: userGroups,
-        }),
-    }).then((response) => responseCheck(response));
-};
-const responseCheck = (response) => {
-    if (response.ok) {
-        notification.success({
-            message: "Operation done successfully",
-            placement: "top",
-            duration: 1.5,
-        });
-    } else {
-        notification.error({
-            message: "Operation failed",
-            placement: "top",
-            duration: 1.5,
-        });
-    }
 };

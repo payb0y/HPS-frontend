@@ -4,7 +4,7 @@ import AuthContext from "../../store/auth-context";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Form, Input, Button } from "antd";
 import { userLogin } from "../../api/UserAPI";
-import "antd/dist/antd.css";
+import "antd/dist/antd.min.css";
 
 const Login = () => {
     const authCtx = useContext(AuthContext);

@@ -1,47 +1,56 @@
-import React, { useState, useEffect, useContext } from "react";
-import "antd/dist/antd.css";
-import AuthContext from "../../../store/auth-context";
-import { Modal, Transfer } from "antd";
+import "antd/dist/antd.min.css";
+import React, { useState, useEffect } from "react";
+import { Modal, Transfer, notification } from "antd";
 import differenceBy from "lodash/differenceBy";
-import { addGroupOrRoleToUser, getGroupsOrRoles } from "../../../api/UserAPI";
 
-const ManageUserGroups = (props) => {
+const ManageUser = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(true);
-    const authCtx = useContext(AuthContext);
-    const [userGroups, setUsergroups] = useState([]);
+    const [userData, setUserData] = useState([]);
     const [targetKeys, setTargetKeys] = useState([]);
+    useEffect(() => {
+        fetch();
+    }, []);
+    const fetch = async () => {
+        const res = await props.fetch();
+        if (res.status === 200) {
+            const data = await res.data.map((d) => {
+                return { key: d.id, ...d };
+            });
+            setUserData(data);
+            setTargetKeys(
+                differenceBy(data, props.entity, "id").map((data) => data.id)
+            );
+        }
+    };
+    const handleOk = async () => {
+        const res = await props.post(
+            props.username,
+            userData
+                .filter((group) => targetKeys.indexOf(group.id) < 0)
+                .map((group) => group.name)
+        );
+        if (res.status === 200) {
+            notification.success({
+                message: "Operation done successfully",
+                placement: "top",
+                duration: 1.5,
+            });
+            props.fetchUsers();
+            setIsModalVisible(false);
+            props.setManageMenu();
+        }
+    };
     const handleCancel = () => {
         setIsModalVisible(false);
         props.setManageMenu();
     };
-    useEffect(() => {
-        getGroupsOrRoles(props, authCtx, setUsergroups);
-    }, []);
-    useEffect(() => {
-        setTargetKeys(
-            differenceBy(userGroups, props.entity, "id").map(
-                (group) => group.id
-            )
-        );
-    }, [userGroups]);
     const filterOption = (inputValue, option) =>
         option.name.indexOf(inputValue) > -1;
 
     const handleChange = (newTargetKeys) => {
         setTargetKeys(newTargetKeys);
     };
-    const handleOk = async () => {
-        addGroupOrRoleToUser(
-            props,
-            authCtx,
-            userGroups
-                .filter((group) => targetKeys.indexOf(group.id) < 0)
-                .map((group) => group.name)
-        );
-        props.setReload(Math.random());
-        setIsModalVisible(false);
-        props.setManageMenu();
-    };
+
     return (
         <Modal
             title={props.title}
@@ -53,7 +62,7 @@ const ManageUserGroups = (props) => {
         >
             <Transfer
                 titles={["Joined", "Available"]}
-                dataSource={userGroups}
+                dataSource={userData}
                 showSearch
                 filterOption={filterOption}
                 targetKeys={targetKeys}
@@ -65,4 +74,4 @@ const ManageUserGroups = (props) => {
     );
 };
 
-export default ManageUserGroups;
+export default ManageUser;

@@ -1,49 +1,64 @@
-import "antd/dist/antd.css";
+import "antd/dist/antd.min.css";
 import { Table, Tag, Menu, Dropdown, Space } from "antd";
-import React, { useContext, useEffect, useState } from "react";
-import AuthContext from "../../store/auth-context";
-import ManageUserGroups from "./Manage/ManageUser";
+import React, { useEffect, useState } from "react";
+import ManageUser from "./Manage/ManageUser";
 import { SettingOutlined } from "@ant-design/icons";
-import { fetchUsers } from "../../api/UserAPI";
+import {
+    getGroups,
+    getUsers,
+    getRoles,
+    addUserToGroups,
+    addRolesToUser,
+} from "../../api/UserAPI";
+
 const Users = () => {
-    const authCtx = useContext(AuthContext);
     const [dataSource, setDataSource] = useState([]);
     const [manageMenu, setManageMenu] = useState();
     const [loading, setLoading] = useState(false);
-    const [reload, setReload] = useState();
     let currentUser;
+
     useEffect(() => {
-        fetchUsers(authCtx, setDataSource, setLoading);
-    }, [reload]);
+        fetchUsers();
+    }, []);
+    const fetchUsers = async () => {
+        setLoading(true);
+        const res = await getUsers();
+        if (res.status === 200) {
+            setDataSource(res.data);
+            setLoading(false);
+        }
+    };
+
     const clickHandler = (item) => {
         switch (item.key) {
             case "1":
                 setManageMenu(
-                    <ManageUserGroups
+                    <ManageUser
                         username={currentUser.username}
                         entity={currentUser.groupes}
                         setManageMenu={setManageMenu}
-                        setReload={setReload}
-                        getUrl="http://localhost:8080/api/groups"
-                        postUrl="http://localhost:8080/api/user/addUserToGroups"
-                        title={"Manage groups"}
+                        fetchUsers={fetchUsers}
+                        fetch={getGroups}
+                        post={addUserToGroups}
+                        title="Manage groups"
                     />
                 );
                 break;
             case "2":
                 setManageMenu(
-                    <ManageUserGroups
+                    <ManageUser
                         username={currentUser.username}
                         entity={currentUser.roles}
                         setManageMenu={setManageMenu}
-                        setReload={setReload}
-                        getUrl="http://localhost:8080/api/roles"
-                        postUrl="http://localhost:8080/api/user/addRolesToUser"
+                        fetchUsers={fetchUsers}
+                        fetch={getRoles}
+                        post={addRolesToUser}
                         title="Manage roles"
                     />
                 );
                 break;
             default:
+                return;
         }
     };
     const menu = (
