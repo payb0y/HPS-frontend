@@ -1,6 +1,5 @@
 import "antd/dist/antd.min.css";
-import React, { useContext, useState, useEffect } from "react";
-import AuthContext from "../../store/auth-context";
+import React, { useState, useEffect } from "react";
 import { Table, Menu, Dropdown, Space, notification } from "antd";
 import { SettingOutlined } from "@ant-design/icons";
 import { getGroups, deleteGroup } from "../../api/UserAPI";
@@ -53,10 +52,6 @@ const Groups = () => {
                 {
                     key: 1,
                     label: "delete group",
-                },
-                {
-                    key: 2,
-                    label: "rename group",
                 },
             ]}
         />

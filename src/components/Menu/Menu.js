@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import AuthContext from "../../store/auth-context";
 import "antd/dist/antd.min.css";
 import { Layout, Menu } from "antd";
@@ -12,7 +12,6 @@ const Menue = () => {
     const authCtx = useContext(AuthContext);
     const { Content, Sider } = Layout;
     const clickHandler = (item) => {
-        if (item.key === "logout") authCtx.logout();
         switch (item.key) {
             case "users":
                 setActiveMenu(<Users />);
@@ -20,6 +19,11 @@ const Menue = () => {
             case "groups":
                 setActiveMenu(<Groups />);
                 break;
+            case "logout":
+                authCtx.logout();
+                break;
+            default:
+                return;
         }
     };
     const items = [
@@ -44,7 +48,13 @@ const Menue = () => {
     ];
 
     const rolesFilter = () => {
-        switch (authCtx.roles.toString()) {
+        const role = authCtx.roles.includes("SUPER_ADMIN")
+            ? "SUPER_ADMIN"
+            : authCtx.roles.includes("ADMIN")
+            ? "ADMIN"
+            : "USER";
+
+        switch (role) {
             case "ADMIN":
                 return items.filter((item) => item.role === "ADMIN");
             case "SUPER_ADMIN":
