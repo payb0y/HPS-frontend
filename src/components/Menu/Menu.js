@@ -6,7 +6,7 @@ import { UserOutlined, LogoutOutlined, TeamOutlined } from "@ant-design/icons";
 
 import Users from "../Users/Users";
 import Groups from "../Groups/Groups";
-
+import roles from "../../store/roles";
 const Menue = () => {
     const [activeMenu, setActiveMenu] = useState();
     const authCtx = useContext(AuthContext);
@@ -31,33 +31,35 @@ const Menue = () => {
             key: "users",
             icon: React.createElement(UserOutlined),
             label: "Users",
-            role: "ADMIN",
+            role: roles.ADMIN,
         },
         {
             key: "groups",
             icon: React.createElement(TeamOutlined),
             label: "Groups",
-            role: "ADMIN",
+            role: roles.ADMIN,
         },
         {
             key: "roles",
             icon: React.createElement(TeamOutlined),
             label: "Roles",
-            role: "SUPER_ADMIN",
+            role: roles.SUPER_ADMIN,
         },
     ];
 
     const rolesFilter = () => {
-        const role = authCtx.roles.includes("SUPER_ADMIN")
-            ? "SUPER_ADMIN"
-            : authCtx.roles.includes("ADMIN")
-            ? "ADMIN"
-            : "USER";
+        const role = authCtx.roles.includes(roles.SUPER_ADMIN)
+            ? roles.SUPER_ADMIN
+            : authCtx.roles.includes(roles.ADMIN)
+            ? roles.ADMIN
+            : roles.USER;
 
         switch (role) {
-            case "ADMIN":
-                return items.filter((item) => item.role === "ADMIN");
-            case "SUPER_ADMIN":
+            case roles.USER:
+                return items.filter((item) => item.role === roles.USER);
+            case roles.ADMIN:
+                return items.filter((item) => item.role === roles.ADMIN);
+            case roles.SUPER_ADMIN:
                 return items;
         }
         return [];
