@@ -79,13 +79,9 @@ const Users = () => {
 
     const columns = [
         {
-            title: "Id",
-            dataIndex: "id",
-            key: "1",
-        },
-        {
             title: "Username",
             dataIndex: "username",
+            align: "center",
             key: "2",
         },
         {
@@ -95,7 +91,7 @@ const Users = () => {
             render: (tags) => (
                 <>
                     {tags.map((tag) => (
-                        <Tag color="blue" key={tag.id}>
+                        <Tag color="blue" key={tag.name}>
                             {tag.name}
                         </Tag>
                     ))}
@@ -105,11 +101,11 @@ const Users = () => {
         {
             title: "Groups",
             key: "4",
-            dataIndex: "groupes",
+            dataIndex: "groups",
             render: (tags) => (
                 <>
                     {tags.map((tag) => (
-                        <Tag color="blue" key={tag.id}>
+                        <Tag color="blue" key={tag.name}>
                             {tag.name}
                         </Tag>
                     ))}
@@ -123,7 +119,7 @@ const Users = () => {
             render: (tags) => (
                 <>
                     {tags.map((tag) => (
-                        <Tag color="blue" key={Math.random()}>
+                        <Tag color="blue" key={tag.name}>
                             {tag.name}
                         </Tag>
                     ))}

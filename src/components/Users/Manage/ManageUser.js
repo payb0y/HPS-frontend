@@ -14,11 +14,13 @@ const ManageUser = (props) => {
         const res = await props.fetch();
         if (res.status === 200) {
             const data = await res.data.map((d) => {
-                return { key: d.id, ...d };
+                return { key: d.name, ...d };
             });
             setUserData(data);
             setTargetKeys(
-                differenceBy(data, props.entity, "id").map((data) => data.id)
+                differenceBy(data, props.entity, "name").map(
+                    (data) => data.name
+                )
             );
         }
     };
@@ -26,7 +28,7 @@ const ManageUser = (props) => {
         const res = await props.post(
             props.username,
             userData
-                .filter((group) => targetKeys.indexOf(group.id) < 0)
+                .filter((group) => targetKeys.indexOf(group.name) < 0)
                 .map((group) => group.name)
         );
         if (res.status === 200) {

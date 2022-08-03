@@ -1,7 +1,7 @@
 import "antd/dist/antd.min.css";
 import React, { useState, useEffect } from "react";
 import { Table, Menu, Dropdown, Space, notification } from "antd";
-import { SettingOutlined } from "@ant-design/icons";
+import { PicCenterOutlined, SettingOutlined } from "@ant-design/icons";
 import { getGroups, deleteGroup } from "../../api/UserAPI";
 
 const Groups = () => {
@@ -16,7 +16,7 @@ const Groups = () => {
         const res = await getGroups();
         if (res.status === 200) {
             const data = await res.data.map((d) => {
-                return { key: d.id, ...d };
+                return { key: d.name, ...d };
             });
             setDataSource(data);
             setLoading(false);
@@ -58,13 +58,9 @@ const Groups = () => {
     );
     const columns = [
         {
-            title: "Id",
-            dataIndex: "id",
-            key: "1",
-        },
-        {
             title: "Name",
             dataIndex: "name",
+            align: "center",
             key: "2",
         },
         {
