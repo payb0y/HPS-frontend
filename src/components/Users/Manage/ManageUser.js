@@ -10,6 +10,7 @@ const ManageUser = (props) => {
     useEffect(() => {
         fetch();
     }, []);
+
     const fetch = async () => {
         const res = await props.fetch();
         if (res.status === 200) {
@@ -24,6 +25,7 @@ const ManageUser = (props) => {
             );
         }
     };
+
     const handleOk = async () => {
         const res = await props.post(
             props.username,

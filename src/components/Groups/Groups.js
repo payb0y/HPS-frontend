@@ -1,7 +1,7 @@
 import "antd/dist/antd.min.css";
 import React, { useState, useEffect } from "react";
 import { Table, Menu, Dropdown, Space, notification } from "antd";
-import { PicCenterOutlined, SettingOutlined } from "@ant-design/icons";
+import { SettingOutlined } from "@ant-design/icons";
 import { getGroups, deleteGroup } from "../../api/UserAPI";
 
 const Groups = () => {
@@ -34,6 +34,9 @@ const Groups = () => {
                         duration: 1.5,
                     });
                 }
+                break;
+            default:
+                return;
         }
     };
     const clickHandler = (item) => {
@@ -43,6 +46,8 @@ const Groups = () => {
                 break;
             case "2":
                 break;
+            default:
+                return;
         }
     };
     const menu = (

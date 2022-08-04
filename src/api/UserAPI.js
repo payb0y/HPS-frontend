@@ -64,31 +64,23 @@ export async function deleteGroup(name) {
         });
 }
 
-export const userLogin = async (value, authCtx) => {
-    fetch("http://localhost:8080/login", {
+export async function userLogin(value, authCtx) {
+    return await fetch("http://localhost:8080/login", {
         method: "POST",
         headers: new Headers({
             "Content-Type": "application/x-www-form-urlencoded",
         }),
         body: `username=${value.username}&password=${value.password}`,
-    })
-        .then((response) => {
-            if (response.ok) {
-                return response.json();
-            } else {
-                notification.error({
-                    message: "Login failed",
-                    placement: "top",
-                    duration: 1,
-                });
-            }
-        })
-        .then((data) => {
-            if (data) {
-                authCtx.login(data.access_token);
-            }
-        })
-        .catch((error) => {
-            console.log(error);
-        });
-};
+    }).then((response) => {
+        if (response.ok) {
+            return response;
+        } else {
+            notification.error({
+                message: "Login failed",
+                placement: "top",
+                duration: 1,
+            });
+        }
+    });
+}
+//export const userLogin = async (value, authCtx) => {};

@@ -28,14 +28,13 @@ const Users = () => {
             setLoading(false);
         }
     };
-
     const clickHandler = (item) => {
         switch (item.key) {
             case "1":
                 setManageMenu(
                     <ManageUser
                         username={currentUser.username}
-                        entity={currentUser.groupes}
+                        entity={currentUser.groups}
                         setManageMenu={setManageMenu}
                         fetchUsers={fetchUsers}
                         fetch={getGroups}

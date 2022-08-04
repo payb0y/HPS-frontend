@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import jwt from "jwt-decode";
+import roles from "./roles";
 
 let logoutTimer;
 
 const AuthContext = React.createContext({
     token: "",
     username: "",
-    roles: [],
+    role: "",
     isLoggedIn: false,
     login: (token) => {},
     logout: () => {},
@@ -33,7 +34,13 @@ export const AuthContextProvider = (props) => {
 
     const contextValue = {
         token: token,
-        roles: token ? jwt(token).roles : null,
+        role: token
+            ? jwt(token).roles.includes(roles.SUPER_ADMIN)
+                ? roles.SUPER_ADMIN
+                : jwt(token).roles.includes(roles.ADMIN)
+                ? roles.ADMIN
+                : roles.USER
+            : null,
         username: token ? jwt(token).sub : null,
         isLoggedIn: userIsLoggedIn,
         login: loginHandler,

@@ -1,23 +1,24 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import AuthContext from "../../store/auth-context";
 import "antd/dist/antd.min.css";
 import { Layout, Menu } from "antd";
 import { UserOutlined, LogoutOutlined, TeamOutlined } from "@ant-design/icons";
 
-import Users from "../Users/Users";
-import Groups from "../Groups/Groups";
 import roles from "../../store/roles";
-const Menue = () => {
-    const [activeMenu, setActiveMenu] = useState();
+import { useNavigate } from "react-router-dom";
+
+const Menue = (props) => {
     const authCtx = useContext(AuthContext);
     const { Content, Sider } = Layout;
+    const navigate = useNavigate();
+
     const clickHandler = (item) => {
         switch (item.key) {
             case "users":
-                setActiveMenu(<Users />);
+                navigate("/users");
                 break;
             case "groups":
-                setActiveMenu(<Groups />);
+                navigate("/groups");
                 break;
             case "logout":
                 authCtx.logout();
@@ -48,21 +49,16 @@ const Menue = () => {
     ];
 
     const rolesFilter = () => {
-        const role = authCtx.roles.includes(roles.SUPER_ADMIN)
-            ? roles.SUPER_ADMIN
-            : authCtx.roles.includes(roles.ADMIN)
-            ? roles.ADMIN
-            : roles.USER;
-
-        switch (role) {
+        switch (authCtx.role) {
             case roles.USER:
                 return items.filter((item) => item.role === roles.USER);
             case roles.ADMIN:
                 return items.filter((item) => item.role === roles.ADMIN);
             case roles.SUPER_ADMIN:
                 return items;
+            default:
+                return [];
         }
-        return [];
     };
     return (
         <Layout
@@ -103,7 +99,7 @@ const Menue = () => {
                         minHeight: 280,
                     }}
                 >
-                    {activeMenu}
+                    {props.children}
                 </Content>
             </Layout>
         </Layout>
