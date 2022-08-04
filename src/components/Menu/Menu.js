@@ -7,7 +7,7 @@ import { UserOutlined, LogoutOutlined, TeamOutlined } from "@ant-design/icons";
 import roles from "../../store/roles";
 import { useNavigate } from "react-router-dom";
 
-const Menue = (props) => {
+const SideMenu = (props) => {
     const authCtx = useContext(AuthContext);
     const { Content, Sider } = Layout;
     const navigate = useNavigate();
@@ -19,6 +19,9 @@ const Menue = (props) => {
                 break;
             case "groups":
                 navigate("/groups");
+                break;
+            case "roles":
+                navigate("/roles");
                 break;
             case "logout":
                 authCtx.logout();
@@ -106,4 +109,4 @@ const Menue = (props) => {
     );
 };
 
-export default Menue;
+export default SideMenu;

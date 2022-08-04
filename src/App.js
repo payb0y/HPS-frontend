@@ -3,8 +3,9 @@ import Menu from "./components/Menu/Menu";
 import { useContext } from "react";
 import AuthContext from "./store/auth-context";
 import { Route, Routes, Navigate } from "react-router-dom";
-import Users from "./components/Users/Users";
-import Groups from "./components/Groups/Groups";
+import Users from "./components/Menu/MenuItems/Users/Users";
+import Groups from "./components/Menu/MenuItems/Groups/Groups";
+import Roles from "./components/Menu/MenuItems/Roles/Roles";
 import roles from "./store/roles";
 
 function App() {
@@ -21,6 +22,9 @@ function App() {
                                 <Route path="/groups" element={<Groups />} />
                                 <Route path="/users" element={<Users />} />
                             </>
+                        )}
+                        {authCtx.role === roles.SUPER_ADMIN && (
+                            <Route path="/roles" element={<Roles />} />
                         )}
                         <Route path="*" element={<Navigate to="/" replace />} />
                     </Routes>

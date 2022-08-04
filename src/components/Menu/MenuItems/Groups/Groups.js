@@ -2,7 +2,7 @@ import "antd/dist/antd.min.css";
 import React, { useState, useEffect } from "react";
 import { Table, Menu, Dropdown, Space, notification } from "antd";
 import { SettingOutlined } from "@ant-design/icons";
-import { getGroups, deleteGroup } from "../../api/UserAPI";
+import { getGroups, deleteGroup } from "../../../../api/UserAPI";
 
 const Groups = () => {
     const [dataSource, setDataSource] = useState([]);

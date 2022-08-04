@@ -9,7 +9,7 @@ import {
     getRoles,
     addUserToGroups,
     addRolesToUser,
-} from "../../api/UserAPI";
+} from "../../../../api/UserAPI";
 
 const Users = () => {
     const [dataSource, setDataSource] = useState([]);
