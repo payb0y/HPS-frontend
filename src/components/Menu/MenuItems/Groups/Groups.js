@@ -1,12 +1,16 @@
 import "antd/dist/antd.min.css";
 import React, { useState, useEffect } from "react";
-import { Table, Menu, Dropdown, Space, notification } from "antd";
+import { Table, Menu, Dropdown, Space, notification, Tag } from "antd";
 import { SettingOutlined } from "@ant-design/icons";
 import { getGroups, deleteGroup } from "../../../../api/UserAPI";
+import ManageEnv from "./Manage/ManageEnv";
+import AddItem from "../../../AddItem/AddItem";
 
 const Groups = () => {
     const [dataSource, setDataSource] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [manageMenu, setManageMenu] = useState();
+
     let currentGroup;
     useEffect(() => {
         fetchGroups();
@@ -28,6 +32,7 @@ const Groups = () => {
             case "delete":
                 const res = await deleteGroup(currentGroup.name);
                 if (res.status === 200) {
+                    fetchGroups();
                     notification.success({
                         message: "Operation done successfully",
                         placement: "top",
@@ -45,6 +50,14 @@ const Groups = () => {
                 manageGroup("delete");
                 break;
             case "2":
+                setManageMenu(
+                    <ManageEnv
+                        group={currentGroup}
+                        setManageMenu={setManageMenu}
+                        reloadGroups={fetchGroups}
+                        title="Manage environments"
+                    />
+                );
                 break;
             default:
                 return;
@@ -56,7 +69,11 @@ const Groups = () => {
             items={[
                 {
                     key: 1,
-                    label: "delete group",
+                    label: "Delete group",
+                },
+                {
+                    key: 2,
+                    label: "Manage environments",
                 },
             ]}
         />
@@ -66,11 +83,25 @@ const Groups = () => {
             title: "Name",
             dataIndex: "name",
             align: "center",
+            key: "1",
+        },
+        {
+            title: "Environments",
             key: "2",
+            dataIndex: "environments",
+            render: (tags) => (
+                <>
+                    {tags.map((tag) => (
+                        <Tag color="blue" key={tag.name}>
+                            {tag.name}
+                        </Tag>
+                    ))}
+                </>
+            ),
         },
         {
             title: "Action",
-            key: "6",
+            key: "3",
             render: (record) => (
                 <Space size="middle">
                     <Dropdown
@@ -92,7 +123,10 @@ const Groups = () => {
                 dataSource={dataSource}
                 columns={columns}
                 loading={loading}
+                pagination={{ pageSize: 8 }}
             />
+            <AddItem type="Group" reloadData={fetchGroups} />
+            {manageMenu}
         </>
     );
 };

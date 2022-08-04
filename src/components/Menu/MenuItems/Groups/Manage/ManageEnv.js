@@ -1,35 +1,39 @@
 import "antd/dist/antd.min.css";
 import React, { useState, useEffect } from "react";
 import { Modal, Transfer, notification } from "antd";
-import differenceBy from "lodash/differenceBy";
+import {
+    addEnvironmentsToGroup,
+    getAvailableEnvironments,
+    getEnvironments,
+} from "../../../../../api/UserAPI";
 
-const ManageUser = (props) => {
+const ManageEnv = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(true);
-    const [userData, setUserData] = useState([]);
+    const [envData, setEnvData] = useState([]);
     const [targetKeys, setTargetKeys] = useState([]);
     useEffect(() => {
         fetch();
     }, []);
 
     const fetch = async () => {
-        const res = await props.fetch();
-        if (res.status === 200) {
-            const data = await res.data.map((d) => {
-                return { key: d.name, ...d };
-            });
-            setUserData(data);
-            setTargetKeys(
-                differenceBy(data, props.entity, "name").map(
-                    (data) => data.name
-                )
+        const res = await getEnvironments();
+        const res1 = await getAvailableEnvironments();
+        if (res.status === 200 && res1.status === 200) {
+            const available = await res1.data;
+            const data = [...props.group.environments, ...available].map(
+                (d) => {
+                    return { key: d.name, ...d };
+                }
             );
+            setEnvData(data);
+            setTargetKeys(available.map((env) => env.name));
         }
     };
 
     const handleOk = async () => {
-        const res = await props.post(
-            props.username,
-            userData
+        const res = await addEnvironmentsToGroup(
+            props.group.name,
+            envData
                 .filter((group) => targetKeys.indexOf(group.name) < 0)
                 .map((group) => group.name)
         );
@@ -39,8 +43,8 @@ const ManageUser = (props) => {
                 placement: "top",
                 duration: 1.5,
             });
-            props.reloadUsers();
             setIsModalVisible(false);
+            props.reloadGroups();
             props.setManageMenu();
         }
     };
@@ -66,7 +70,7 @@ const ManageUser = (props) => {
         >
             <Transfer
                 titles={["Joined", "Available"]}
-                dataSource={userData}
+                dataSource={envData}
                 showSearch
                 filterOption={filterOption}
                 targetKeys={targetKeys}
@@ -78,4 +82,4 @@ const ManageUser = (props) => {
     );
 };
 
-export default ManageUser;
+export default ManageEnv;

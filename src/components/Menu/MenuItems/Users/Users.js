@@ -36,7 +36,7 @@ const Users = () => {
                         username={currentUser.username}
                         entity={currentUser.groups}
                         setManageMenu={setManageMenu}
-                        fetchUsers={fetchUsers}
+                        reloadUsers={fetchUsers}
                         fetch={getGroups}
                         post={addUserToGroups}
                         title="Manage groups"
@@ -49,7 +49,7 @@ const Users = () => {
                         username={currentUser.username}
                         entity={currentUser.roles}
                         setManageMenu={setManageMenu}
-                        fetchUsers={fetchUsers}
+                        reloadUsers={fetchUsers}
                         fetch={getRoles}
                         post={addRolesToUser}
                         title="Manage roles"
@@ -81,11 +81,11 @@ const Users = () => {
             title: "Username",
             dataIndex: "username",
             align: "center",
-            key: "2",
+            key: "1",
         },
         {
             title: "Roles",
-            key: "3",
+            key: "2",
             dataIndex: "roles",
             render: (tags) => (
                 <>
@@ -99,7 +99,7 @@ const Users = () => {
         },
         {
             title: "Groups",
-            key: "4",
+            key: "3",
             dataIndex: "groups",
             render: (tags) => (
                 <>
@@ -113,7 +113,7 @@ const Users = () => {
         },
         {
             title: "LdapGroups",
-            key: "5",
+            key: "4",
             dataIndex: "ldapGroups",
             render: (tags) => (
                 <>
@@ -127,7 +127,7 @@ const Users = () => {
         },
         {
             title: "Action",
-            key: "6",
+            key: "5",
             render: (record) => (
                 <Space size="middle">
                     <Dropdown

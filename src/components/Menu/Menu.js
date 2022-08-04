@@ -3,7 +3,6 @@ import AuthContext from "../../store/auth-context";
 import "antd/dist/antd.min.css";
 import { Layout, Menu } from "antd";
 import { UserOutlined, LogoutOutlined, TeamOutlined } from "@ant-design/icons";
-
 import roles from "../../store/roles";
 import { useNavigate } from "react-router-dom";
 
@@ -22,6 +21,12 @@ const SideMenu = (props) => {
                 break;
             case "roles":
                 navigate("/roles");
+                break;
+            case "my_environments":
+                navigate("/my_environments");
+                break;
+            case "environments":
+                navigate("/environments");
                 break;
             case "logout":
                 authCtx.logout();
@@ -44,6 +49,18 @@ const SideMenu = (props) => {
             role: roles.ADMIN,
         },
         {
+            key: "environments",
+            icon: React.createElement(TeamOutlined),
+            label: "Environments",
+            role: roles.ADMIN,
+        },
+        {
+            key: "my_environments",
+            icon: React.createElement(TeamOutlined),
+            label: "My environments",
+            role: roles.USER,
+        },
+        {
             key: "roles",
             icon: React.createElement(TeamOutlined),
             label: "Roles",
@@ -51,14 +68,14 @@ const SideMenu = (props) => {
         },
     ];
 
-    const rolesFilter = () => {
+    const itemsFilter = () => {
         switch (authCtx.role) {
             case roles.USER:
                 return items.filter((item) => item.role === roles.USER);
             case roles.ADMIN:
                 return items.filter((item) => item.role === roles.ADMIN);
             case roles.SUPER_ADMIN:
-                return items;
+                return items.filter((item) => item.role !== roles.USER);
             default:
                 return [];
         }
@@ -78,7 +95,7 @@ const SideMenu = (props) => {
                         borderRight: 0,
                     }}
                     items={[
-                        ...rolesFilter(),
+                        ...itemsFilter(),
                         {
                             key: "logout",
                             icon: React.createElement(LogoutOutlined),
