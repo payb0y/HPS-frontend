@@ -86,20 +86,6 @@ const Groups = () => {
             key: "1",
         },
         {
-            title: "Environments",
-            key: "2",
-            dataIndex: "environments",
-            render: (tags) => (
-                <>
-                    {tags.map((tag) => (
-                        <Tag color="blue" key={tag.name}>
-                            {tag.name}
-                        </Tag>
-                    ))}
-                </>
-            ),
-        },
-        {
             title: "Action",
             key: "3",
             render: (record) => (

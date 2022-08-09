@@ -6,6 +6,7 @@ import {
     getAvailableEnvironments,
     getEnvironments,
 } from "../../../../../api/UserAPI";
+import { differenceBy } from "lodash";
 
 const ManageEnv = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(true);
@@ -17,16 +18,16 @@ const ManageEnv = (props) => {
 
     const fetch = async () => {
         const res = await getEnvironments();
-        const res1 = await getAvailableEnvironments();
-        if (res.status === 200 && res1.status === 200) {
-            const available = await res1.data;
-            const data = [...props.group.environments, ...available].map(
-                (d) => {
-                    return { key: d.name, ...d };
-                }
-            );
+        if (res.status === 200) {
+            const data = res.data.map((d) => {
+                return { key: d.name, ...d };
+            });
             setEnvData(data);
-            setTargetKeys(available.map((env) => env.name));
+            setTargetKeys(
+                differenceBy(data, props.group.environments, "name").map(
+                    (data) => data.name
+                )
+            );
         }
     };
 

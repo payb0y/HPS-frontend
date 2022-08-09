@@ -1,22 +1,16 @@
 import "antd/dist/antd.min.css";
 import { Table, Tag, Menu, Dropdown, Space } from "antd";
 import React, { useEffect, useState } from "react";
-import ManageUser from "./Manage/ManageUser";
 import { SettingOutlined } from "@ant-design/icons";
-import {
-    getGroups,
-    getUsers,
-    getRoles,
-    addUserToGroups,
-    addRolesToUser,
-} from "../../../../api/UserAPI";
+import { getUsers } from "../../../../api/UserAPI";
+import ManageUserRoles from "./Manage/ManageUserRoles";
+import ManageUserGroups from "./Manage/ManageUser";
 
 const Users = () => {
     const [dataSource, setDataSource] = useState([]);
     const [manageMenu, setManageMenu] = useState();
     const [loading, setLoading] = useState(false);
     let currentUser;
-
     useEffect(() => {
         fetchUsers();
     }, []);
@@ -32,27 +26,19 @@ const Users = () => {
         switch (item.key) {
             case "1":
                 setManageMenu(
-                    <ManageUser
-                        username={currentUser.username}
-                        entity={currentUser.groups}
+                    <ManageUserGroups
+                        user={currentUser}
                         setManageMenu={setManageMenu}
                         reloadUsers={fetchUsers}
-                        fetch={getGroups}
-                        post={addUserToGroups}
-                        title="Manage groups"
                     />
                 );
                 break;
             case "2":
                 setManageMenu(
-                    <ManageUser
-                        username={currentUser.username}
-                        entity={currentUser.roles}
+                    <ManageUserRoles
+                        user={currentUser}
                         setManageMenu={setManageMenu}
                         reloadUsers={fetchUsers}
-                        fetch={getRoles}
-                        post={addRolesToUser}
-                        title="Manage roles"
                     />
                 );
                 break;
@@ -70,7 +56,7 @@ const Users = () => {
                 },
                 {
                     key: 2,
-                    label: "Manage roles",
+                    label: "Manage role",
                 },
             ]}
         />
@@ -84,16 +70,16 @@ const Users = () => {
             key: "1",
         },
         {
-            title: "Roles",
+            title: "Role",
             key: "2",
-            dataIndex: "roles",
-            render: (tags) => (
+            dataIndex: "role",
+            render: (tag) => (
                 <>
-                    {tags.map((tag) => (
+                    {tag !== null ? (
                         <Tag color="blue" key={tag.name}>
                             {tag.name}
                         </Tag>
-                    ))}
+                    ) : null}
                 </>
             ),
         },

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import jwt from "jwt-decode";
-import roles from "./roles";
 
 let logoutTimer;
 
@@ -17,7 +16,6 @@ export const AuthContextProvider = (props) => {
     const initialToken = localStorage.getItem("token");
     const [token, setToken] = useState(initialToken);
     const userIsLoggedIn = !!token;
-
     const logoutHandler = () => {
         setToken(null);
         localStorage.removeItem("token");
@@ -34,13 +32,7 @@ export const AuthContextProvider = (props) => {
 
     const contextValue = {
         token: token,
-        role: token
-            ? jwt(token).roles.includes(roles.SUPER_ADMIN)
-                ? roles.SUPER_ADMIN
-                : jwt(token).roles.includes(roles.ADMIN)
-                ? roles.ADMIN
-                : roles.USER
-            : null,
+        role: token ? jwt(token).role : null,
         username: token ? jwt(token).sub : null,
         isLoggedIn: userIsLoggedIn,
         login: loginHandler,

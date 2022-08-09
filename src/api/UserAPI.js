@@ -70,15 +70,6 @@ export async function getUserEnvironments(username) {
             return error.response.data;
         });
 }
-export async function getAvailableEnvironments() {
-    return await Request.get("/availableEnvironments")
-        .then((res) => {
-            return res;
-        })
-        .catch((error) => {
-            return error.response.data;
-        });
-}
 export async function addEnvironmentsToGroup(name, envNames) {
     return await Request.post("/group/addEnvironmentsToGroup", {
         name: name,
@@ -103,10 +94,10 @@ export async function addUserToGroups(username, userGroups) {
             return error.response.data;
         });
 }
-export async function addRolesToUser(username, userRoles) {
-    return await Request.post("/user/addRolesToUser", {
+export async function addRoleToUser(username, roleName) {
+    return await Request.post("/user/addRoleToUser", {
         username: username,
-        names: userRoles,
+        name: roleName,
     })
         .then((res) => {
             return res;

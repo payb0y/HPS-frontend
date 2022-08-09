@@ -2,8 +2,9 @@ import "antd/dist/antd.min.css";
 import React, { useState, useEffect } from "react";
 import { Modal, Transfer, notification } from "antd";
 import differenceBy from "lodash/differenceBy";
+import { addUserToGroups, getGroups } from "../../../../../api/UserAPI";
 
-const ManageUser = (props) => {
+const ManageUserGroups = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(true);
     const [userData, setUserData] = useState([]);
     const [targetKeys, setTargetKeys] = useState([]);
@@ -12,14 +13,14 @@ const ManageUser = (props) => {
     }, []);
 
     const fetch = async () => {
-        const res = await props.fetch();
+        const res = await getGroups();
         if (res.status === 200) {
             const data = await res.data.map((d) => {
                 return { key: d.name, ...d };
             });
             setUserData(data);
             setTargetKeys(
-                differenceBy(data, props.entity, "name").map(
+                differenceBy(data, props.user.groups, "name").map(
                     (data) => data.name
                 )
             );
@@ -27,8 +28,8 @@ const ManageUser = (props) => {
     };
 
     const handleOk = async () => {
-        const res = await props.post(
-            props.username,
+        const res = await addUserToGroups(
+            props.user.username,
             userData
                 .filter((group) => targetKeys.indexOf(group.name) < 0)
                 .map((group) => group.name)
@@ -57,7 +58,7 @@ const ManageUser = (props) => {
 
     return (
         <Modal
-            title={props.title}
+            title="Manage groups"
             visible={isModalVisible}
             onOk={handleOk}
             onCancel={handleCancel}
@@ -78,4 +79,4 @@ const ManageUser = (props) => {
     );
 };
 
-export default ManageUser;
+export default ManageUserGroups;
